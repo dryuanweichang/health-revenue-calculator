@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大健康营收潜力测算器</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #f4f3ec;
+      color: #1f2621;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .loading {
+      width: min(520px, calc(100% - 48px));
+      border: 1px solid #d8d6ca;
+      border-radius: 8px;
+      background: #fffdf7;
+      padding: 28px;
+      box-shadow: 0 22px 55px rgba(30, 36, 31, .12);
+    }
+    strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+    p {
+      margin: 0;
+      color: #70766d;
+    }
+  </style>
+</head>
+<body>
+  <main class="loading">
+    <strong>正在打开测算器</strong>
+    <p>请稍候，正在加载大健康营收潜力测算工具。</p>
+  </main>
+  <script>
+    (async () => {
+      const parts = [
+        "payload/index.b64.000.txt",
+        "payload/index.b64.001.txt",
+        "payload/index.b64.002.txt",
+        "payload/index.b64.003.txt",
+        "payload/index.b64.004.txt",
+        "payload/index.b64.005.txt",
+        "payload/index.b64.006.txt",
+        "payload/index.b64.007.0.txt",
+        "payload/index.b64.007.1.txt",
+        "payload/index.b64.007.2.txt",
+        "payload/index.b64.007.3.txt",
+        "payload/index.b64.007.4.txt"
+      ];
+      const base64 = (await Promise.all(parts.map(async (path) => {
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) throw new Error(`Failed to load ${path}`);
+        return response.text();
+      }))).join("").replace(/\s+/g, "");
+      const bytes = Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+      const html = new TextDecoder("utf-8").decode(bytes);
+      document.open();
+      document.write(html);
+      document.close();
+    })().catch((error) => {
+      console.error(error);
+      document.body.innerHTML = '<main class="loading"><strong>页面加载失败</strong><p>请刷新页面重试，或稍后再打开。</p></main>';
+    });
+  </script>
+</body>
+</html>
